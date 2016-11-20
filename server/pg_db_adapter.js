@@ -1,21 +1,23 @@
 var pgp      = require('pg-promise')({});
 var database = pgp(process.env.DATABASE);
 
-function fetchDataAndReturn(func, params, response, isList) {
+function fetchDataAndReturn(func, params, callback, isList) {
+    var returnString = '';
     database.func(func, params)
         .then(function (data) {
-            response.json((isList) ? data : data[0]);
+            callback(data);
         })
         .catch(function (error) {
-            response.status(400).send(error.message);
+            console.log(error.message);
         });
+
 }
 
 module.exports = {
-    fetchListAndReturn: function (func, params, response) {
-        fetchDataAndReturn(func, params, response, true);
+    fetchListAndReturn: function (func, params, callback) {
+        fetchDataAndReturn(func, params, callback, true);
     },
-    fetchItemAndReturn: function (func, params, response) {
-        fetchDataAndReturn(func, params, response, false);
+    fetchItemAndReturn: function (func, params, callback) {
+        fetchDataAndReturn(func, params, callback, false);
     }
 };
