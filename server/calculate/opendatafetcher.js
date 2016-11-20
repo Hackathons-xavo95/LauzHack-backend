@@ -4,7 +4,7 @@ var urlencode = require('urlencode');
 function fetchTrain(from, to, callback) {
     utf8From = urlencode(from);
     utf8To = urlencode(to);
-    utf8Url = 'http://transport.opendata.ch/v1/connections?from=' + utf8From + '&to=' + utf8To + '&limit=1&fields[]=connections/sections/journey/name&fields[]=connections/sections/departure/station/name&fields[]=connections/sections/departure/departure&fields[]=connections/sections/arrival/station/name&fields[]=connections/sections/arrival/arrival';
+    utf8Url = 'http://transport.opendata.ch/v1/connections?from=' + utf8From + '&to=' + utf8To + '&limit=2&fields[]=connections/sections/journey/name&fields[]=connections/sections/departure/station/name&fields[]=connections/sections/departure/departure&fields[]=connections/sections/arrival/station/name&fields[]=connections/sections/arrival/arrival';
 
     request(utf8Url, function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -42,16 +42,20 @@ function splitTimeFromDB(formatedstring, callback) {
 
 function formatRequest(result, callback) {
     var connectionsArray = result.connections;
-    for (var i = 0; i < connectionsArray.length; i++) {
+    var i, j;
+    var MAX_PETITIONS = 0;
+    for (i = 0; i < connectionsArray.length; i++) {
+        MAX_PETITIONS++;
         var sectionsArray = connectionsArray[i].sections;
         if (sectionsArray.length > 1) {
+            MAX_PETITIONS += (sectionsArray.length - 1);
             console.log("Multiple Trip Journey");
-            for (var j = 0; j < sectionsArray.length; j++) {
+            for (j = 0; j < sectionsArray.length; j++) {
                 var trip = sectionsArray[j];
                 if(trip.journey != null) {
                     splitTrain(trip.journey.name, function (train_id) {
                         splitTime(trip.arrival.arrival, function (hours, mins) {
-                            callback(train_id, hours, mins);
+                            callback(train_id, hours, mins, i, j, MAX_PETITIONS);
                         });
                     });
                 }
@@ -62,7 +66,7 @@ function formatRequest(result, callback) {
             var trip = sectionsArray[0];
             splitTrain(trip.journey.name, function (train_id) {
                 splitTime(trip.arrival.arrival, function (hours, mins) {
-                    callback(train_id, hours, mins);
+                    callback(train_id, hours, mins, i, 0, MAX_PETITIONS);
                 });
             });
         }
