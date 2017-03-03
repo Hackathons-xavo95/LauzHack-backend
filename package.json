@@ -1,21 +1,21 @@
 {
-  "name": "alo",
+  "name": "sbbdelay",
   "version": "1.0.0",
-  "description": "ATM Location Optimizer",
+  "description": "sbb delay predictor",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xavo95/ALO.git"
+    "url": "git+https://github.com/xavo95/LauzHack-backend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xavo95/ALO/issues"
+    "url": "https://github.com/xavo95/LauzHack-backend.git/issues"
   },
-  "homepage": "https://github.com/xavo95/ALO#readme",
+  "homepage": "https://github.com/xavo95/LauzHack-backend.git#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "connect-timeout": "^1.7.0",
